@@ -4,22 +4,22 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	//"github.com/dkallman13/Vicky3Optimizer/types"
+	"github.com/dkallman13/Vicky3Optimizer/types"
 	"github.com/bzick/tokenizer"
 )
 
 const (
-	TokenCurlyOpen  = 1
-	TokenCurlyClose = 2
-	TokenEquals     = 3
+	TokenCurlyOpen  = iota + 1
+	TokenCurlyClose
+	TokenEquals
+	TokenDoubleQuoted
 )
 
-// var DecodedSaveFile SaveFile
+var DecodedSaveFile *types.SaveFile
 var SaveFiles []string
 var SaveFileLoc string
 var saveFileLocBuilder strings.Builder
-var parser *tokenizer.Tokenizer
+var isInMetadata bool
 
 func SaveFileLocSetter() {
 	homedir, err := os.UserHomeDir()
@@ -46,6 +46,7 @@ func TokenizeSave(saveFileName string) string {
 	for _, file := range SaveFiles {
 		switch file == saveFileName {
 		case true:
+			DecodedSaveFile = new(types.SaveFile)
 			var saveFileBuilder strings.Builder
 			var rawFileTextBuilder strings.Builder
 			saveFileBuilder.WriteString(SaveFileLoc)
@@ -54,10 +55,13 @@ func TokenizeSave(saveFileName string) string {
 			
 			
 			parser := tokenizer.New()
-			parser.AllowKeywordSymbols(tokenizer.Underscore, tokenizer.Numbers)
-			parser.DefineTokens(TokenCurlyOpen, []string{"{"})
-			parser.DefineTokens(TokenCurlyClose, []string{"}"})
-			parser.DefineTokens(TokenEquals, []string{"="})
+			parser.
+				AllowKeywordSymbols(tokenizer.Underscore, tokenizer.Numbers).
+				DefineTokens(TokenCurlyOpen, []string{"{"}).
+				DefineTokens(TokenCurlyClose, []string{"}"}).
+				DefineTokens(TokenEquals, []string{"="}).
+				DefineStringToken(TokenDoubleQuoted, `"`, `"`).
+				SetEscapeSymbol(tokenizer.BackSlash).AddSpecialStrings(tokenizer.DefaultSpecialString)
 			stream := parser.ParseBytes(rawFile)
 			
 
@@ -65,12 +69,41 @@ func TokenizeSave(saveFileName string) string {
 				log.Fatal(err)
 			}
 			x := 0
+			bracketCount := 0
+			isInMetadata = false
 			for stream.IsValid() {
-				if stream.CurrentToken().Is(tokenizer.TokenKeyword) {
-					rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
-					x++
+				switch stream.CurrentToken().Is(TokenCurlyOpen){
+				case true:
+					bracketCount++
+				case false:
+					switch stream.CurrentToken().Is(TokenCurlyClose){
+					case true:
+						bracketCount--
+					case false:
+						switch stream.CurrentToken().Is(tokenizer.TokenKeyword){
+						case true:
+							rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
+							switch isInMetadata {
+							case true:
+								switch stream.CurrentToken().ValueString() == "name"{
+								case true:
+									stream.GoNext()
+									switch stream.CurrentToken().Is(TokenEquals){
+									case true:
+										stream.GoNext()
+										DecodedSaveFile{PlayerCountryName: stream.CurrentToken().ValueString()} 
+									}
+								}
+							}
+							x++
+							switch stream.CurrentToken().ValueString() {
+							case "meta_data":
+								isInMetadata = true
+							}
+						}
+					}
 				}
-				if(x>5){
+				if(x>50){
 					break
 				}
 				stream.GoNext()
@@ -79,5 +112,5 @@ func TokenizeSave(saveFileName string) string {
 			return rawFileTextBuilder.String()
 		}
 	}
-	return "fail"
+	return "no matching save file found"
 }
