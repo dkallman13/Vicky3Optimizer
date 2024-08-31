@@ -20,6 +20,7 @@ func createRenderer() multitemplate.Renderer {
 	
 	r.AddFromFiles("index", "templates/base/base.html", "templates/index.html")
 	r.AddFromFiles("/save", "templates/base/base.html", "templates/save/save.html")
+	r.AddFromFiles("/db/state", "templates/base/base.html", "templates/db/state.html")
 	return r
 }
 
@@ -44,6 +45,13 @@ func main() {
 		})
 	})
 	}
+	router.GET("/db/state", func (c *gin.Context)  {
+		c.HTML(http.StatusOK, "/db/state", gin.H{
+			"title" : "state adding",
+
+		})
+	})
+	//router.POST()
 	
 	router.Run() // listen and serve on localhost
 }

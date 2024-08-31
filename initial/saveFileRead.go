@@ -15,7 +15,7 @@ const (
 	TokenDoubleQuoted
 )
 
-var DecodedSaveFile *types.SaveFile
+var DecodedSaveFile types.SaveFile
 var SaveFiles []string
 var SaveFileLoc string
 var saveFileLocBuilder strings.Builder
@@ -46,7 +46,7 @@ func TokenizeSave(saveFileName string) string {
 	for _, file := range SaveFiles {
 		switch file == saveFileName {
 		case true:
-			DecodedSaveFile = new(types.SaveFile)
+			DecodedSaveFile := new(types.SaveFile)
 			var saveFileBuilder strings.Builder
 			var rawFileTextBuilder strings.Builder
 			saveFileBuilder.WriteString(SaveFileLoc)
@@ -79,10 +79,13 @@ func TokenizeSave(saveFileName string) string {
 					switch stream.CurrentToken().Is(TokenCurlyClose){
 					case true:
 						bracketCount--
+						switch bracketCount{
+							case 0:
+								isInMetadata=false
+						}
 					case false:
 						switch stream.CurrentToken().Is(tokenizer.TokenKeyword){
 						case true:
-							rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
 							switch isInMetadata {
 							case true:
 								switch stream.CurrentToken().ValueString() == "name"{
@@ -91,7 +94,8 @@ func TokenizeSave(saveFileName string) string {
 									switch stream.CurrentToken().Is(TokenEquals){
 									case true:
 										stream.GoNext()
-										DecodedSaveFile{PlayerCountryName: stream.CurrentToken().ValueString()} 
+										DecodedSaveFile.PlayerCountryName= stream.CurrentToken().ValueString()
+										rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
 									}
 								}
 							}
@@ -103,7 +107,8 @@ func TokenizeSave(saveFileName string) string {
 						}
 					}
 				}
-				if(x>50){
+				
+				if(x>500){
 					break
 				}
 				stream.GoNext()
