@@ -3,9 +3,12 @@ package main
 import (
 	"net/http"
 	"strings"
+
 	"github.com/dkallman13/Vicky3Optimizer/initial"
+	//"github.com/dkallman13/Vicky3Optimizer/types"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
+    //"strconv"
 )
 
 func init() {
@@ -17,7 +20,6 @@ func init() {
 
 func createRenderer() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
-	
 	r.AddFromFiles("index", "templates/base/base.html", "templates/index.html")
 	r.AddFromFiles("/save", "templates/base/base.html", "templates/save/save.html")
 	r.AddFromFiles("/db/state", "templates/base/base.html", "templates/db/state.html")
@@ -51,7 +53,14 @@ func main() {
 
 		})
 	})
-	//router.POST()
-	
+	/* 
+	router.POST("/db/state", func (c *gin.Context)  {
+		id, err := strconv.Atoi(c.PostForm("stateId"))
+			if err != nil {
+        	panic(err)
+    	}
+		newstate := types.NewState(id, c.PostForm("stateName"))
+	})
+	*/
 	router.Run() // listen and serve on localhost
 }

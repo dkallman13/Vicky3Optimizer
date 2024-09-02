@@ -1,17 +1,35 @@
 {
   "cSpell.words": [
+    "buildid",
     "bzick",
     "charbyte",
+    "countryname",
     "dependants",
     "dkallman",
     "firstline",
     "godotenv",
     "gonic",
+    "goodamount",
+    "goodid",
+    "goodname",
+    "goodprice",
     "gorm",
     "joho",
+    "levelnum",
     "multitemplate",
+    "newbuilding",
+    "newcountry",
+    "newgood",
+    "newpop",
+    "newprovince",
+    "newstate",
+    "pmss",
+    "popid",
     "Savefile",
     "savefiles",
-    "tmpl"
+    "stateid",
+    "tmpl",
+    "typeof",
+    "workid"
   ]
 }
