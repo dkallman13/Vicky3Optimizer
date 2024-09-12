@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"strings"
 
+	"strconv"
+
 	"github.com/dkallman13/Vicky3Optimizer/initial"
-	//"github.com/dkallman13/Vicky3Optimizer/types"
+	"github.com/dkallman13/Vicky3Optimizer/types"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-    //"strconv"
 )
 
 func init() {
@@ -16,6 +17,7 @@ func init() {
 	initial.SaveFileLocSetter()
 	initial.ConnectToDB()
 	initial.SaveFileLister()
+	initial.Migrate()
 }
 
 func createRenderer() multitemplate.Renderer {
@@ -31,36 +33,40 @@ func main() {
 	router.HTMLRender = createRenderer()
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index" ,  gin.H{
-			"title": "home",
+		c.HTML(http.StatusOK, "index", gin.H{
+			"title":     "home",
 			"savefiles": initial.SaveFiles,
 		})
 	})
-	for _, savFile := range(initial.SaveFiles){
+	for _, savFile := range initial.SaveFiles {
 		var savRouteBuilder strings.Builder
 		savRouteBuilder.WriteString("save/")
 		savRouteBuilder.WriteString(savFile)
-		router.GET(savRouteBuilder.String() , func(c *gin.Context) {
-		c.HTML(http.StatusOK, "/save" ,  gin.H{
-			"title": savFile,
-			"firstline" : initial.TokenizeSave(savFile),
+		router.GET(savRouteBuilder.String(), func(c *gin.Context) {
+			c.HTML(http.StatusOK, "/save", gin.H{
+				"title":     savFile,
+				"firstline": initial.TokenizeSave(savFile),
+			})
 		})
-	})
 	}
-	router.GET("/db/state", func (c *gin.Context)  {
+	router.GET("/db/state", func(c *gin.Context) {
+		var results []types.State
+		stateArray := initial.DB.Table("states").Select("id", "name").Find(&results)
+		print(stateArray)
 		c.HTML(http.StatusOK, "/db/state", gin.H{
-			"title" : "state adding",
-
+			"title": "states",
+			"states": stateArray,
 		})
 	})
-	/* 
-	router.POST("/db/state", func (c *gin.Context)  {
-		id, err := strconv.Atoi(c.PostForm("stateId"))
-			if err != nil {
-        	panic(err)
-    	}
-		newstate := types.NewState(id, c.PostForm("stateName"))
+	router.POST("/db/state", func(c *gin.Context) {
+		c.Request.ParseForm()
+		idstring :=c.Request.Form.Get("stateId")
+		id, err := strconv.Atoi(idstring)
+		if err!=nil {
+			panic(err)
+		}
+		newstate := types.NewState(id, c.Request.Form.Get("stateName"))
+		initial.DB.Create(&newstate)
 	})
-	*/
 	router.Run() // listen and serve on localhost
 }

@@ -1,9 +1,9 @@
 package types
 
-import (
-)
+import "gorm.io/gorm"
 
 type Pop struct {
+	gorm.Model
 	id int
 	jobType string
 	workforceSize int

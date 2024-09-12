@@ -1,9 +1,9 @@
 package types
 
-import (
-)
+import "gorm.io/gorm"
 
 type Good struct {
+	gorm.Model
 	id int
 	name string
 	amount float32
