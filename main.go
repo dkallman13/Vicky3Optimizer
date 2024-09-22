@@ -3,9 +3,7 @@ package main
 import (
 	"net/http"
 	"strings"
-
 	"strconv"
-
 	"github.com/dkallman13/Vicky3Optimizer/initial"
 	"github.com/dkallman13/Vicky3Optimizer/types"
 	"github.com/gin-contrib/multitemplate"
@@ -51,22 +49,33 @@ func main() {
 	}
 	router.GET("/db/state", func(c *gin.Context) {
 		var results []types.State
-		stateArray := initial.DB.Table("states").Select("id", "name").Find(&results)
-		print(stateArray)
+		stateArray := initial.DB.Table("states").Select("*").Find(&results)
+		println(stateArray)
 		c.HTML(http.StatusOK, "/db/state", gin.H{
-			"title": "states",
-			"states": stateArray,
+			"title":  "states",
+			"states": results,
 		})
 	})
 	router.POST("/db/state", func(c *gin.Context) {
 		c.Request.ParseForm()
-		idstring :=c.Request.Form.Get("stateId")
+		idstring := c.Request.Form.Get("stateId")
 		id, err := strconv.Atoi(idstring)
-		if err!=nil {
+		if err != nil {
 			panic(err)
 		}
 		newstate := types.NewState(id, c.Request.Form.Get("stateName"))
 		initial.DB.Create(&newstate)
+	})
+	router.POST("/db/stateU", func(c *gin.Context) {
+		c.Request.ParseForm()
+		idstring := c.Request.Form.Get("stateId")
+		id, err := strconv.Atoi(idstring)
+		if err != nil {
+			panic(err)
+		}
+		var state types.State
+		initial.DB.Table("states").Select("ID", "Name").Where(&types.State{ID:id}).Find(&state)
+		initial.DB.Model(&state).Update("Name", c.Request.Form.Get("stateName"))
 	})
 	router.Run() // listen and serve on localhost
 }

@@ -1,6 +1,10 @@
 {{define "body"}}
-    {{range .states}}
-        <h4>{{.name}}</h4>
-        <p>{{.id}}</p>
-    {{end}}
+<ul>
+  {{range .states}}
+  <li>
+    <h4>{{.Name}}</h4>
+    <p>id :{{.ID}}</p>
+  </li>
+  {{end}}
+</ul>
 {{end}}

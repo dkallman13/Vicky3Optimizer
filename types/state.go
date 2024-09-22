@@ -1,15 +1,16 @@
 package types
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type State struct {
 	gorm.Model
-	ID        int `gorm:"primaryKey"`
-	name      string `gorm:"column:name"`
-	provinces []Province `gorm:"foreignKey:stateId;references:id"`
+	ID   int
+	Name string `gorm:"size:32"`
 }
 
 func NewState(stateId int, stateName string) State {
-	newstate := State{ID: stateId, name: stateName, provinces: make([]Province, 0)}
+	newstate := State{ID: stateId, Name: stateName}
 	return newstate
 }

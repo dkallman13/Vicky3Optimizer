@@ -4,13 +4,13 @@ import "gorm.io/gorm"
 
 type Pop struct {
 	gorm.Model
-	id int
-	jobType string
-	workforceSize int
-	dependantsSize int
-	workplaceId int
+	Id int
+	JobType string
+	WorkforceSize int
+	DependantsSize int
+	WorkplaceId int
 }
 func NewPop(popid int, job string, workforce int, dependants int, workid int) Pop{
-	newpop := Pop{id: popid, jobType: job, workforceSize: workforce, dependantsSize: dependants, workplaceId: workid}
+	newpop := Pop{Id: popid, JobType: job, WorkforceSize: workforce, DependantsSize: dependants, WorkplaceId: workid}
 	return newpop
 }
