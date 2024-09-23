@@ -2,79 +2,79 @@ based off of math and inspired by GeneralistGaming's spreadsheet
 ## TODO
 #### Backend
 - Get data from save file
-    -[x] save selection 
-    -[x] read lines of save
-    -[ ] codify the save data
+    - [x] save selection 
+    - [x] read lines of save
+    - [ ] codify the save data
 - make a database with that data
-	-[ ] determine data structures of save
-	-[ ] create preliminary database of states
-	-[ ] create preliminary structure of good ids
-	-[ ] create preliminary structure of pop types
-	-[ ] create database structure tables
-	-[x] make database if one doesn't exist
+	- [ ] determine data structures of save
+	- [ ] create preliminary database of states
+	- [ ] create preliminary structure of good ids
+	- [ ] create preliminary structure of pop types
+	- [ ] create database structure tables
+	- [x] make database if one doesn't exist
 - buildings, goods, and optimizations (the meat and potatoes)
-	-[ ] get good prices in buildable states for designated country
-	-[ ] sort:
-		-[ ] sort by peasants
-		-[ ] sort by unused airable land for farm buildings 
-		-[ ] sort by migration attraction
-		-[ ] sort by pops
-		-[ ] sort by unemployed pops
-		-[ ] sort by resource availability
-		-[ ] sort by market access
-	-[ ] calculate best buildings to build and potentially how many to build
-		-[ ] profit per worker
-		-[ ] profit per construction
-		-[ ] avg wage calculation
-		-[ ] price impacts of building in the state
-		-[ ] price impacts of building in market
-		-[ ] determine best PM's for buildings, both new and built
+	- [ ] get good prices in buildable states for designated country
+	- [ ] sort:
+		- [ ] sort by peasants
+		- [ ] sort by unused airable land for farm buildings 
+		- [ ] sort by migration attraction
+		- [ ] sort by pops
+		- [ ] sort by unemployed pops
+		- [ ] sort by resource availability
+		- [ ] sort by market access
+	- [ ] calculate best buildings to build and potentially how many to build
+		- [ ] profit per worker
+		- [ ] profit per construction
+		- [ ] avg wage calculation
+		- [ ] price impacts of building in the state
+		- [ ] price impacts of building in market
+		- [ ] determine best PM's for buildings, both new and built
 #### Frontend
 - start page
-	-[x] save select
-	-[ ] mod combinations
+	- [x] save select
+	- [ ] mod combinations
 - [ ] tables for ___ in page form when the save is loaded:
-	-[ ] good prices
-		-[ ] in your market
-		-[ ] look for shortages/price floors and warn about them
-		-[ ] sort by:
-			-[ ] highest price %
-			-[ ] lowest price %
-			-[ ] orders high
-			-[ ] orders low
-	-[ ] state good prices
-		-[ ] checkbox for not in your market but with build access
-		-[ ] look for shortages/price floors and warn about them
-		-[ ] sort by:
-			-[ ] highest price %
-			-[ ] lowest price %
-			-[ ] orders high
-			-[ ] orders low
-	-[ ] states:
-		-[ ] in your market
-		-[ ] also a checkbox for not in your market but with build access
-		-[ ] building recommendations
-		-[ ] link to currently built buildings in the state
-		-[ ] link to state good prices
-		-[ ] sort by:
-			-[ ] sort by peasants
-			-[ ] sort by unused airable land for farm buildings 
-			-[ ] sort by migration attraction
-			-[ ] sort by pops
-			-[ ] sort by unemployed pops
-			-[ ] sort by resource availability
-			-[ ] sort by market access
-	-[ ] building types:
-		-[ ] profit per worker
-		-[ ] profit per construction
-		-[ ] avg wage calculation
-		-[ ] price impacts of building in the state
-		-[ ] price impacts of building in market
-		-[ ] determine best PM's for buildings
-	-[ ] buildings in a given state:
-		-[ ] profit per worker
-		-[ ] profit per construction
-		-[ ] avg wage calculation
-		-[ ] price impacts of building in the state
-		-[ ] price impacts of building in market
-		-[ ] determine best PM's for buildings
+	- [ ] good prices
+		- [ ] in your market
+		- [ ] look for shortages/price floors and warn about them
+		- [ ] sort by:
+			- [ ] highest price %
+			- [ ] lowest price %
+			- [ ] orders high
+			- [ ] orders low
+	- [ ] state good prices
+		- [ ] checkbox for not in your market but with build access
+		- [ ] look for shortages/price floors and warn about them
+		- [ ] sort by:
+			- [ ] highest price %
+			- [ ] lowest price %
+			- [ ] orders high
+			- [ ] orders low
+	- [ ] states:
+		- [ ] in your market
+		- [ ] also a checkbox for not in your market but with build access
+		- [ ] building recommendations
+		- [ ] link to currently built buildings in the state
+		- [ ] link to state good prices
+		- [ ] sort by:
+			- [ ] sort by peasants
+			- [ ] sort by unused airable land for farm buildings 
+			- [ ] sort by migration attraction
+			- [ ] sort by pops
+			- [ ] sort by unemployed pops
+			- [ ] sort by resource availability
+			- [ ] sort by market access
+	- [ ] building types:
+		- [ ] profit per worker
+		- [ ] profit per construction
+		- [ ] avg wage calculation
+		- [ ] price impacts of building in the state
+		- [ ] price impacts of building in market
+		- [ ] determine best PM's for buildings
+	- [ ] buildings in a given state:
+		- [ ] profit per worker
+		- [ ] profit per construction
+		- [ ] avg wage calculation
+		- [ ] price impacts of building in the state
+		- [ ] price impacts of building in market
+		- [ ] determine best PM's for buildings
