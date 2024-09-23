@@ -4,11 +4,11 @@ import "gorm.io/gorm"
 
 type Country struct {
 	gorm.Model
-	id int `gorm:"primaryKey"`
-	name string `gorm:"size:64"`
-	states []State 
+	Id int `gorm:"primaryKey"`
+	Name string `gorm:"size:64"`
+	Provinces []Province `gorm:"foreignKey:CountryId;references:Id"`
 }
 func NewCountry(ID int, countryname string) Country{
-	newcountry := Country{id :ID, name: countryname,  states: make([]State, 0)}
+	newcountry := Country{Id :ID, Name: countryname,  Provinces: make([]Province, 0)}
 	return newcountry
 }

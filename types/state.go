@@ -6,11 +6,12 @@ import (
 
 type State struct {
 	gorm.Model
-	ID   int
+	Id   int `gorm:"primaryKey"`
 	Name string `gorm:"size:32"`
+	Provinces []Province `gorm:"foreignKey:StateId;references:Id"`
 }
 
 func NewState(stateId int, stateName string) State {
-	newstate := State{ID: stateId, Name: stateName}
+	newstate := State{Id: stateId, Name: stateName, Provinces: make([]Province, 0)}
 	return newstate
 }

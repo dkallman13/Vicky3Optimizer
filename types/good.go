@@ -4,12 +4,12 @@ import "gorm.io/gorm"
 
 type Good struct {
 	gorm.Model
-	id int
-	name string
-	amount float32
-	price float32
+	Id int `gorm:"primaryKey"`
+	Name string
+	Amount float64
+	Price float64
 }
-func NewGood(goodid int, goodname string, goodamount float32, goodprice float32) Good{
-	newgood := Good{id :goodid, name: goodname, amount: goodamount, price: goodprice}
+func NewGood(goodid int, goodname string, goodamount float64, goodprice float64) Good{
+	newgood := Good{Id :goodid, Name: goodname, Amount: goodamount, Price: goodprice}
 	return newgood
 }
