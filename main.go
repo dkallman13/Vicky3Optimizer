@@ -64,7 +64,7 @@ func main() {
 			panic(err)
 		}
 		newstate := types.NewState(id, c.Request.Form.Get("stateName"))
-		initial.DB.Omit("Provinces.*").Create(&newstate)
+		initial.DB.Omit("Provinces").Create(&newstate)
 	})
 	router.POST("/db/stateU", func(c *gin.Context) {
 		c.Request.ParseForm()
@@ -74,7 +74,8 @@ func main() {
 			panic(err)
 		}
 		var state types.State
-		initial.DB.Table("states").Select("Id", "Name", "Provinces").Where(&types.State{Id: id}).Find(&state)
+		initial.DB.Table("states").Select("Id", "Name").Where(&types.State{Id: id}).Find(&state)
+		var provinces []*types.Province
 		if c.Request.Form.Get("ProvinceIds") != "" {
 			provIds := strings.Split(c.Request.Form.Get("ProvinceIds"), ",")
 			for i := 0; i < len(provIds); i++ {
@@ -83,13 +84,14 @@ func main() {
 					panic(err)
 				}
 				var province *types.Province
-				initial.DB.First(&province, provId)
+				initial.DB.Model(&province).Where(&types.Province{Id: provId}).Find(&province)
 				if province != nil {
-					initial.DB.Model(&state).Association("Provinces").Append(&province)
+					provinces = append(provinces, province)
 				}
 			}
 		}
-		initial.DB.Model(&state).Update("Name", c.Request.Form.Get("stateName"))
+		initial.DB.Model(&state).Association("Province").Replace(provinces)
+		initial.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
 	})
 	router.Run() // listen and serve on localhost
 }
