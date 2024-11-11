@@ -9,6 +9,21 @@ type State struct {
 	Id   int `gorm:"primaryKey"`
 	Name string `gorm:"size:32"`
 	Provinces []Province `gorm:"foreignKey:StateId;references:Id"`
+	AirableLand int
+	IronCap int
+	CoalCap int
+	SulfurCap int
+	LeadCap int
+	WoodCap int
+	FishCap int
+	WhaleCap int
+	OilCap int
+	RubberCap int
+	HasOpium bool
+	HasCotton bool
+	HasDye bool
+	HasSilk bool
+	
 }
 
 func NewState(stateId int, stateName string) State {
