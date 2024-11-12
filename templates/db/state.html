@@ -4,6 +4,39 @@
   <li>
     <h4>{{.Name}}</h4>
     <p>id :{{.Id}}</p>
+    <p>land: {{.AirableLand}}</p>
+    <h5>Resources: </h5>
+    <p>
+      <ul>
+        {{if gt .IronCap 0}}
+        <li> Iron: {{ .IronCap }}</li>
+        {{end}}
+        {{if gt .CoalCap 0}}
+        <li> Coal: {{ .CoalCap }}</li>
+        {{end}}
+        {{if gt .SulfurCap 0}}
+        <li>Sulfur: {{ .SulfurCap }}</li>
+        {{end}}
+        {{if gt .LeadCap 0}}
+        <li>Lead: {{ .LeadCap }}</li>
+        {{end}}
+        {{if gt .WoodCap 0}}
+        <li>Wood: {{ .WoodCap }}</li>
+        {{end}}
+        {{if gt .FishCap 0}}
+        <li>Fish: {{ .FishCap }}</li>
+        {{end}}
+        {{if gt .WhaleCap 0}}
+        <li>Whales: {{ .WhaleCap }}</li>
+        {{end}}
+        {{if gt .OilCap 0}}
+        <li>Oil: {{ .OilCap }}</li>
+        {{end}}
+        {{if gt .RubberCap 0}}
+        <li>Rubber: {{ .RubberCap }}</li>
+        {{end}}
+      </ul>
+    </p>
   </li>
   {{end}}
 </ul>

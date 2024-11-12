@@ -89,9 +89,59 @@ func main() {
 					provinces = append(provinces, province)
 				}
 			}
+			initial.DB.Model(&state).Association("Province").Replace(provinces)
 		}
-		initial.DB.Model(&state).Association("Province").Replace(provinces)
-		initial.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
+		if c.Request.Form.Get("airableLand") != "" {
+			airableland := c.Request.Form.Get("airableLand")
+			land, err := strconv.Atoi(airableland)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("AirableLand", land)
+		}
+		if c.Request.Form.Get("Iron") != "" {
+			ironstr := c.Request.Form.Get("Iron")
+			iron, err := strconv.Atoi(ironstr)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("IronCap", iron)
+		}
+		if c.Request.Form.Get("Coal") != "" {
+			coalstr := c.Request.Form.Get("Coal")
+			coal, err := strconv.Atoi(coalstr)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("CoalCap", coal)
+		}
+		if c.Request.Form.Get("Sulfur") != "" {
+			sulfurstr := c.Request.Form.Get("Sulfur")
+			sulfur, err := strconv.Atoi(sulfurstr)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("SulfurCap", sulfur)
+		}
+		if c.Request.Form.Get("Lead") != "" {
+			leadstr := c.Request.Form.Get("Lead")
+			lead, err := strconv.Atoi(leadstr)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("LeadCap", lead)
+		}
+		if c.Request.Form.Get("Wood") != "" {
+			woodstr := c.Request.Form.Get("Wood")
+			wood, err := strconv.Atoi(woodstr)
+			if err != nil {
+				panic(err)
+			}
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("WoodCap", wood)
+		}
+		if c.Request.Form.Get("stateName") != ""{
+			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
+		}
 	})
 	router.Run() // listen and serve on localhost
 }
