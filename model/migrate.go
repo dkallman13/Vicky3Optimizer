@@ -1,4 +1,4 @@
-package initial
+package model
 
 import (
 	"github.com/dkallman13/Vicky3Optimizer/types"

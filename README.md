@@ -10,7 +10,7 @@ based off of math and inspired by GeneralistGaming's spreadsheet
 	- [ ] create preliminary database of states
 	- [ ] create preliminary structure of good ids
 	- [ ] create preliminary structure of pop types
-	- [ ] create database structure tables
+	- [x] create database structure tables
 	- [x] make database if one doesn't exist
 - buildings, goods, and optimizations (the meat and potatoes)
 	- [ ] get good prices in buildable states for designated country

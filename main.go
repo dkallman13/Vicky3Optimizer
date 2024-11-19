@@ -1,22 +1,21 @@
 package main
 
 import (
-	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/dkallman13/Vicky3Optimizer/initial"
+	"github.com/dkallman13/Vicky3Optimizer/controllers"
+	"github.com/dkallman13/Vicky3Optimizer/model"
 	"github.com/dkallman13/Vicky3Optimizer/types"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	initial.GetEnvVars()
-	initial.SaveFileLocSetter()
-	initial.ConnectToDB()
-	initial.SaveFileLister()
-	initial.Migrate()
+	model.GetEnvVars()
+	model.SaveFileLocSetter()
+	model.ConnectToDB()
+	model.SaveFileLister()
+	model.Migrate()
 }
 
 func createRenderer() multitemplate.Renderer {
@@ -31,31 +30,9 @@ func main() {
 	router := gin.Default()
 	router.HTMLRender = createRenderer()
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index", gin.H{
-			"title":     "home",
-			"savefiles": initial.SaveFiles,
-		})
-	})
-	for _, savFile := range initial.SaveFiles {
-		var savRouteBuilder strings.Builder
-		savRouteBuilder.WriteString("save/")
-		savRouteBuilder.WriteString(savFile)
-		router.GET(savRouteBuilder.String(), func(c *gin.Context) {
-			c.HTML(http.StatusOK, "/save", gin.H{
-				"title":     savFile,
-				"firstline": initial.TokenizeSave(savFile),
-			})
-		})
-	}
-	router.GET("/db/state", func(c *gin.Context) {
-		var results []types.State
-		initial.DB.Table("states").Select("*").Find(&results)
-		c.HTML(http.StatusOK, "/db/state", gin.H{
-			"title":  "states",
-			"states": results,
-		})
-	})
+	router.GET("/", controllers.Home)
+	controllers.Save(router)
+	router.GET("/db/state", controllers.StateGet)
 	router.POST("/db/state", func(c *gin.Context) {
 		c.Request.ParseForm()
 		idstring := c.Request.Form.Get("stateId")
@@ -64,7 +41,7 @@ func main() {
 			panic(err)
 		}
 		newstate := types.NewState(id, c.Request.Form.Get("stateName"))
-		initial.DB.Omit("Provinces").Create(&newstate)
+		model.DB.Omit("Provinces").Create(&newstate)
 	})
 	router.POST("/db/stateU", func(c *gin.Context) {
 		c.Request.ParseForm()
@@ -74,7 +51,7 @@ func main() {
 			panic(err)
 		}
 		var state types.State
-		initial.DB.Table("states").Select("Id", "Name").Where(&types.State{Id: id}).Find(&state)
+		model.DB.Table("states").Select("Id", "Name").Where(&types.State{Id: id}).Find(&state)
 		var provinces []*types.Province
 		if c.Request.Form.Get("ProvinceIds") != "" {
 			provIds := strings.Split(c.Request.Form.Get("ProvinceIds"), ",")
@@ -84,12 +61,12 @@ func main() {
 					panic(err)
 				}
 				var province *types.Province
-				initial.DB.Model(&province).Where(&types.Province{Id: provId}).Find(&province)
+				model.DB.Model(&province).Where(&types.Province{Id: provId}).Find(&province)
 				if province != nil {
 					provinces = append(provinces, province)
 				}
 			}
-			initial.DB.Model(&state).Association("Province").Replace(provinces)
+			model.DB.Model(&state).Association("Province").Replace(provinces)
 		}
 		if c.Request.Form.Get("airableLand") != "" {
 			airableland := c.Request.Form.Get("airableLand")
@@ -97,7 +74,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("AirableLand", land)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("AirableLand", land)
 		}
 		if c.Request.Form.Get("Iron") != "" {
 			ironstr := c.Request.Form.Get("Iron")
@@ -105,7 +82,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("IronCap", iron)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("IronCap", iron)
 		}
 		if c.Request.Form.Get("Coal") != "" {
 			coalstr := c.Request.Form.Get("Coal")
@@ -113,7 +90,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("CoalCap", coal)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("CoalCap", coal)
 		}
 		if c.Request.Form.Get("Sulfur") != "" {
 			sulfurstr := c.Request.Form.Get("Sulfur")
@@ -121,7 +98,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("SulfurCap", sulfur)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("SulfurCap", sulfur)
 		}
 		if c.Request.Form.Get("Lead") != "" {
 			leadstr := c.Request.Form.Get("Lead")
@@ -129,7 +106,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("LeadCap", lead)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("LeadCap", lead)
 		}
 		if c.Request.Form.Get("Wood") != "" {
 			woodstr := c.Request.Form.Get("Wood")
@@ -137,10 +114,10 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("WoodCap", wood)
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("WoodCap", wood)
 		}
 		if c.Request.Form.Get("stateName") != ""{
-			initial.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
 		}
 	})
 	router.Run() // listen and serve on localhost

@@ -1,4 +1,4 @@
-package initial
+package model
 
 import (
 	"log"
@@ -117,5 +117,5 @@ func TokenizeSave(saveFileName string) string {
 			return rawFileTextBuilder.String()
 		}
 	}
-	return "no matching save file found"
+	return "save file" + saveFileName +  " not found"
 }
