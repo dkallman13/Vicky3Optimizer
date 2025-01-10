@@ -2,41 +2,27 @@
 <ul>
   {{range .states}}
   <li>
-    <h4>{{.Name}}</h4>
-    <p>id :{{.Id}}</p>
-    <p>land: {{.AirableLand}}</p>
-    <h5>Resources: </h5>
-    <p>
+    <form action="/db/stateU" method="post" target="_blank">
+      <h4>{{.Name}}</h4>
+      <input type="text" name="stateName" value="{{.Name}}"><br>
+      <label>id :</label> <input type="number" name="stateId" value="{{.Id}}"><br>
+      <label>land:</label> <input type="number" name="airableLand" value="{{.AirableLand}}"> <br>
+      <h5>Resources: </h5>
+      <p>
       <ul>
-        {{if gt .IronCap 0}}
-        <li> Iron: {{ .IronCap }}</li>
-        {{end}}
-        {{if gt .CoalCap 0}}
-        <li> Coal: {{ .CoalCap }}</li>
-        {{end}}
-        {{if gt .SulfurCap 0}}
-        <li>Sulfur: {{ .SulfurCap }}</li>
-        {{end}}
-        {{if gt .LeadCap 0}}
-        <li>Lead: {{ .LeadCap }}</li>
-        {{end}}
-        {{if gt .WoodCap 0}}
-        <li>Wood: {{ .WoodCap }}</li>
-        {{end}}
-        {{if gt .FishCap 0}}
-        <li>Fish: {{ .FishCap }}</li>
-        {{end}}
-        {{if gt .WhaleCap 0}}
-        <li>Whales: {{ .WhaleCap }}</li>
-        {{end}}
-        {{if gt .OilCap 0}}
-        <li>Oil: {{ .OilCap }}</li>
-        {{end}}
-        {{if gt .RubberCap 0}}
-        <li>Rubber: {{ .RubberCap }}</li>
-        {{end}}
+        <li>Iron: <input type="number" name="Iron" value="{{.IronCap }}"></li>
+        <li>Coal: <input type="number" name="Coal" value="{{ .CoalCap }}"></li>
+        <li>Sulfur: <input type="number" name="Sulfur" value="{{ .SulfurCap }}"></li>
+        <li>Lead: <input type="number" name="Lead" value="{{ .LeadCap }}"></li>
+        <li>Wood: <input type="number" name="Wood" value="{{ .WoodCap }}"></li>
+        <li>Fish: <input type="number" name="Fish" value="{{ .FishCap }}"></li>
+        <li>Whales: <input type="number" name="Whales" value="{{ .WhaleCap }}"></li>
+        <li>Oil: <input type="number" name="Oil" value="{{ .OilCap }}"></li>
+        <li>Rubber: <input type="number" name="Rubber" value="{{ .RubberCap }}"></li>
       </ul>
-    </p>
+      </p>
+      <input type="submit" value="Update">
+    </form>
   </li>
   {{end}}
 </ul>

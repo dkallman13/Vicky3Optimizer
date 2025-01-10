@@ -116,6 +116,38 @@ func main() {
 			}
 			model.DB.Model(&state).Where(&types.State{Id: id}).Update("WoodCap", wood)
 		}
+		if c.Request.Form.Get("Fish") != "" {
+			fishstr := c.Request.Form.Get("Fish")
+			fish, err := strconv.Atoi(fishstr)
+			if err != nil {
+				panic(err)
+			}
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("FishCap", fish)
+		}
+		if c.Request.Form.Get("Whales") != "" {
+			whalestr := c.Request.Form.Get("Whales")
+			whale, err := strconv.Atoi(whalestr)
+			if err != nil {
+				panic(err)
+			}
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("WhaleCap", whale)
+		}
+		if c.Request.Form.Get("Oil") != "" {
+			oilstr := c.Request.Form.Get("Oil")
+			oil, err := strconv.Atoi(oilstr)
+			if err != nil {
+				panic(err)
+			}
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("OilCap", oil)
+		}
+		if c.Request.Form.Get("Rubber") != "" {
+			rubberstr := c.Request.Form.Get("Rubber")
+			rubber, err := strconv.Atoi(rubberstr)
+			if err != nil {
+				panic(err)
+			}
+			model.DB.Model(&state).Where(&types.State{Id: id}).Update("RubberCap", rubber)
+		}
 		if c.Request.Form.Get("stateName") != ""{
 			model.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
 		}
