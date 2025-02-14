@@ -2,7 +2,7 @@
 <ul>
   {{range .states}}
   <li>
-    <form action="/db/stateU" method="post" target="_blank">
+    <form action="/db/stateU" method="post" target="_self">
       <h4>{{.Name}}</h4>
       <input type="text" name="stateName" value="{{.Name}}"><br>
       <label>id :</label> <input type="number" name="stateId" value="{{.Id}}"><br>
@@ -21,7 +21,7 @@
         <li>Rubber: <input type="number" name="Rubber" value="{{ .RubberCap }}"></li>
       </ul>
       </p>
-      <input type="submit" value="Update">
+      <input type="submit" value="Update" onclick="setTimeout(function(){window.location.reload();},30)">
     </form>
   </li>
   {{end}}

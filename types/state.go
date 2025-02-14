@@ -30,3 +30,7 @@ func NewState(stateId int, stateName string) State {
 	newstate := State{Id: stateId, Name: stateName, Provinces: make([]Province, 0)}
 	return newstate
 }
+func NewStateNameOnly(stateName string) State {
+	newstate := State{ Name: stateName, Provinces: make([]Province, 0)}
+	return newstate
+}

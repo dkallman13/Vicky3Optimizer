@@ -1,15 +1,17 @@
 package model
 
 import (
+	"io"
 	"log"
 	"os"
 	"strings"
-	"github.com/dkallman13/Vicky3Optimizer/types"
+
 	"github.com/bzick/tokenizer"
+	"github.com/dkallman13/Vicky3Optimizer/types"
 )
 
 const (
-	TokenCurlyOpen  = iota + 1
+	TokenCurlyOpen = iota + 1
 	TokenCurlyClose
 	TokenEquals
 	TokenDoubleQuoted
@@ -51,9 +53,12 @@ func TokenizeSave(saveFileName string) string {
 			var rawFileTextBuilder strings.Builder
 			saveFileBuilder.WriteString(SaveFileLoc)
 			saveFileBuilder.WriteString(saveFileName)
-			rawFile, err := os.ReadFile(saveFileBuilder.String())
-			
-			
+			file, err := os.Open(saveFileBuilder.String())
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer file.Close()
+
 			parser := tokenizer.New()
 			parser.
 				AllowKeywordSymbols(tokenizer.Underscore, tokenizer.Numbers).
@@ -62,60 +67,62 @@ func TokenizeSave(saveFileName string) string {
 				DefineTokens(TokenEquals, []string{"="}).
 				DefineStringToken(TokenDoubleQuoted, `"`, `"`).
 				SetEscapeSymbol(tokenizer.BackSlash).AddSpecialStrings(tokenizer.DefaultSpecialString)
-			stream := parser.ParseBytes(rawFile)
-			
-
-			if err != nil {
-				log.Fatal(err)
-			}
-			x := 0
+			const chunkSize = 4096
+			buffer := make([]byte, chunkSize)
 			bracketCount := 0
 			isInMetadata = false
-			for stream.IsValid() {
-				switch stream.CurrentToken().Is(TokenCurlyOpen){
-				case true:
-					bracketCount++
-				case false:
-					switch stream.CurrentToken().Is(TokenCurlyClose){
+
+			for {
+				n, err := file.Read(buffer)
+				if err != nil && err != io.EOF {
+					log.Fatal(err)
+				}
+				if n == 0 {
+					break
+				}
+
+				stream := parser.ParseBytes(buffer[:n])
+				for stream.IsValid() {
+					switch stream.CurrentToken().Is(TokenCurlyOpen) {
 					case true:
-						bracketCount--
-						switch bracketCount{
-							case 0:
-								isInMetadata=false
-						}
+						bracketCount++
 					case false:
-						switch stream.CurrentToken().Is(tokenizer.TokenKeyword){
+						switch stream.CurrentToken().Is(TokenCurlyClose) {
 						case true:
-							switch isInMetadata {
+							bracketCount--
+							switch bracketCount {
+							case 0:
+								isInMetadata = false
+							}
+						case false:
+							switch stream.CurrentToken().Is(tokenizer.TokenKeyword) {
 							case true:
-								switch stream.CurrentToken().ValueString() == "name"{
+								switch isInMetadata {
 								case true:
-									stream.GoNext()
-									switch stream.CurrentToken().Is(TokenEquals){
+									switch stream.CurrentToken().ValueString() == "name" {
 									case true:
 										stream.GoNext()
-										DecodedSaveFile.PlayerCountryName= stream.CurrentToken().ValueString()
-										rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
+										switch stream.CurrentToken().Is(TokenEquals) {
+										case true:
+											stream.GoNext()
+											DecodedSaveFile.PlayerCountryName = stream.CurrentToken().ValueString()
+											rawFileTextBuilder.WriteString(stream.CurrentToken().ValueString())
+										}
 									}
 								}
-							}
-							x++
-							switch stream.CurrentToken().ValueString() {
-							case "meta_data":
-								isInMetadata = true
+								switch stream.CurrentToken().ValueString() {
+								case "meta_data":
+									isInMetadata = true
+								}
 							}
 						}
 					}
+					stream.GoNext()
 				}
-				
-				if(x>500){
-					break
-				}
-				stream.GoNext()
+				stream.Close()
 			}
-			stream.Close()
 			return rawFileTextBuilder.String()
 		}
 	}
-	return "save file" + saveFileName +  " not found"
+	return "save file" + saveFileName + " not found"
 }
