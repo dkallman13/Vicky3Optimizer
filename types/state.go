@@ -23,6 +23,10 @@ type State struct {
 	HasCotton bool
 	HasDye bool
 	HasSilk bool
+	HasWine bool
+	HasSugar bool
+	HasBananas bool
+	HasTea bool
 	
 }
 

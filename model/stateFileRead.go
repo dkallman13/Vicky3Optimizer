@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
 	"github.com/bzick/tokenizer"
 	"github.com/dkallman13/Vicky3Optimizer/types"
 )
@@ -37,6 +36,8 @@ func TokenizeStateFile(stateFileName string) {
 	buffer := make([]byte, chunkSize)
 	bracketCount := 0
 	var newstate types.State
+	var stateName string
+	var stateId int
 	for {
 		n, err := file.Read(buffer)
 		if err != nil && err != io.EOF {
@@ -55,11 +56,16 @@ func TokenizeStateFile(stateFileName string) {
 				switch stream.CurrentToken().Is(TokenCurlyClose) {
 				case true:
 					bracketCount--
+					switch bracketCount{
+					case 0:
+						DB.Save(&newstate)
+						newstate = types.State{}
+					}
 				}
 			}
 			switch strings.Contains(stream.CurrentToken().ValueString(), "STATE_") {
 			case true:
-				newstate = types.NewStateNameOnly(stream.CurrentToken().ValueString())
+				stateName = stream.CurrentToken().ValueString()
 			case false:
 				switch strings.Contains(stream.CurrentToken().ValueString(), "id") {
 				case true:
@@ -67,10 +73,16 @@ func TokenizeStateFile(stateFileName string) {
 					switch stream.CurrentToken().Is(TokenEquals) {
 					case true:
 						stream.GoNext()
-						newstate.Id, err = strconv.Atoi(stream.CurrentToken().ValueString())
+						stateId, err = strconv.Atoi(stream.CurrentToken().ValueString())
 						if err != nil {
 							log.Fatal(err)
 						}
+						
+						DB.Table("states").Select("Id", "Name").Where(&types.State{Id: stateId}).Find(&newstate)
+						if(newstate.Name!= stateName){
+							newstate.Name= stateName
+						}
+						
 					}
 				case false:
 					switch strings.Contains(stream.CurrentToken().ValueString(), "arable_land") {
@@ -82,6 +94,171 @@ func TokenizeStateFile(stateFileName string) {
 							newstate.AirableLand, err = strconv.Atoi(stream.CurrentToken().ValueString())
 							if err != nil {
 								log.Fatal(err)
+							}
+						}
+					case false:
+						switch strings.Contains(stream.CurrentToken().ValueString(), "bg_logging") {
+						case true:
+							stream.GoNext()
+							switch stream.CurrentToken().Is(TokenEquals) {
+							case true:
+								stream.GoNext()
+								newstate.WoodCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+								if err != nil {
+									log.Fatal(err)
+								}
+							}
+						}
+					case false:
+						switch strings.Contains(stream.CurrentToken().ValueString(), "bg_fishing") {
+						case true:
+							stream.GoNext()
+							switch stream.CurrentToken().Is(TokenEquals) {
+							case true:
+								stream.GoNext()
+								newstate.FishCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+								if err != nil {
+									log.Fatal(err)
+								}
+							}
+						case false:
+							switch strings.Contains(stream.CurrentToken().ValueString(), "bg_iron_mining") {
+							case true:
+								stream.GoNext()
+								switch stream.CurrentToken().Is(TokenEquals) {
+								case true:
+									stream.GoNext()
+									newstate.IronCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+									if err != nil {
+										log.Fatal(err)
+									}
+								}
+							case false:
+								switch strings.Contains(stream.CurrentToken().ValueString(), "bg_coal_mining") {
+								case true:
+									stream.GoNext()
+									switch stream.CurrentToken().Is(TokenEquals) {
+									case true:
+										stream.GoNext()
+										newstate.CoalCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+										if err != nil {
+											log.Fatal(err)
+										}
+									}
+								case false:
+									switch strings.Contains(stream.CurrentToken().ValueString(), "bg_sulfur_mining") {
+									case true:
+										stream.GoNext()
+										switch stream.CurrentToken().Is(TokenEquals) {
+										case true:
+											stream.GoNext()
+											newstate.SulfurCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+											if err != nil {
+												log.Fatal(err)
+											}
+										}
+									case false:
+										switch strings.Contains(stream.CurrentToken().ValueString(), "bg_lead_mining") {
+										case true:
+											stream.GoNext()
+											switch stream.CurrentToken().Is(TokenEquals) {
+											case true:
+												stream.GoNext()
+												newstate.LeadCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+												if err != nil {
+													log.Fatal(err)
+												}
+											}
+										case false:
+											switch strings.Contains(stream.CurrentToken().ValueString(), "bg_whaling") {
+											case true:
+												stream.GoNext()
+												switch stream.CurrentToken().Is(TokenEquals) {
+												case true:
+													stream.GoNext()
+													newstate.WhaleCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+													if err != nil {
+														log.Fatal(err)
+													}
+												}
+											case false:
+												switch strings.Contains(stream.CurrentToken().ValueString(), "bg_oil_extraction") {
+												case true:
+													stream.GoNext()
+													switch strings.Contains(stream.CurrentToken().ValueString(), "undiscovered_amount") {
+													case true:
+														stream.GoNext()
+														switch stream.CurrentToken().Is(TokenEquals) {
+														case true:
+															newstate.OilCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+															if err != nil {
+																log.Fatal(err)
+															}
+														}
+													}
+												case false:
+													switch strings.Contains(stream.CurrentToken().ValueString(), "bg_rubber") {
+													case true:
+														stream.GoNext()
+														switch strings.Contains(stream.CurrentToken().ValueString(), "undiscovered_amount") {
+														case true:
+															stream.GoNext()
+															switch stream.CurrentToken().Is(TokenEquals) {
+															case true:
+																newstate.RubberCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
+																if err != nil {
+																	log.Fatal(err)
+																}
+															}
+														}
+													case false:
+														switch strings.Contains(stream.CurrentToken().ValueString(), "bg_cotton_plantations") {
+														case true:
+															newstate.HasCotton = true
+														case false:
+															switch strings.Contains(stream.CurrentToken().ValueString(), "bg_opium_plantations") {
+															case true:
+																newstate.HasOpium = true
+															case false:
+																switch strings.Contains(stream.CurrentToken().ValueString(), "bg_dye_plantations") {
+																case true:
+																	newstate.HasDye = true
+																case false:
+																	switch strings.Contains(stream.CurrentToken().ValueString(), "bg_vineyard_plantations") {
+																	case true:
+																		newstate.HasWine = true
+																	case false:
+																		switch strings.Contains(stream.CurrentToken().ValueString(), "bg_silk_plantations") {
+																		case true:
+																			newstate.HasSilk = true
+																		case false:
+																			switch strings.Contains(stream.CurrentToken().ValueString(), "bg_sugar_plantations") {
+																			case true:
+																				newstate.HasSugar = true
+																			case false:
+																				switch strings.Contains(stream.CurrentToken().ValueString(), "bg_tea_plantations") {
+																				case true:
+																					newstate.HasTea = true
+																				case false:
+																					switch strings.Contains(stream.CurrentToken().ValueString(), "bg_banana_plantations") {
+																					case true:
+																						newstate.HasBananas = true
+																					case false:
+
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
