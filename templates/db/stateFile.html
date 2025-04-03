@@ -1,0 +1,6 @@
+{{define body}}
+<form action="/db/statefileU" method="post" target="_self">
+    <input type="file" id="statefile">
+    <input type="submit" value="Submit" onclick="setTimeout(function(){window.location.reload();},30)">
+</form>
+{{end}}

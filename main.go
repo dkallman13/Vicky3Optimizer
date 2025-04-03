@@ -23,6 +23,7 @@ func createRenderer() multitemplate.Renderer {
 	r.AddFromFiles("index", "templates/base/base.html", "templates/index.html")
 	r.AddFromFiles("/save", "templates/base/base.html", "templates/save/save.html")
 	r.AddFromFiles("/db/state", "templates/base/base.html", "templates/db/state.html")
+	r.AddFromFiles("/db/statefile", "templates/base/base.html", "templates/db/stateFile.html")
 	return r
 }
 
@@ -152,5 +153,6 @@ func main() {
 			model.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
 		}
 	})
+	router.GET("/db/statefile", controllers.StateFile)
 	router.Run() // listen and serve on localhost
 }
