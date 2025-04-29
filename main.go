@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 	"strings"
+
 	"github.com/dkallman13/Vicky3Optimizer/controllers"
 	"github.com/dkallman13/Vicky3Optimizer/model"
 	"github.com/dkallman13/Vicky3Optimizer/types"
@@ -34,16 +35,7 @@ func main() {
 	router.GET("/", controllers.Home)
 	controllers.Save(router)
 	router.GET("/db/state", controllers.StateGet)
-	router.POST("/db/state", func(c *gin.Context) {
-		c.Request.ParseForm()
-		idstring := c.Request.Form.Get("stateId")
-		id, err := strconv.Atoi(idstring)
-		if err != nil {
-			panic(err)
-		}
-		newstate := types.NewState(id, c.Request.Form.Get("stateName"))
-		model.DB.Omit("Provinces").Create(&newstate)
-	})
+	router.POST("/db/state", controllers.StatePost)
 	router.POST("/db/stateU", func(c *gin.Context) {
 		c.Request.ParseForm()
 		idstring := c.Request.Form.Get("stateId")
@@ -149,10 +141,11 @@ func main() {
 			}
 			model.DB.Model(&state).Where(&types.State{Id: id}).Update("RubberCap", rubber)
 		}
-		if c.Request.Form.Get("stateName") != ""{
+		if c.Request.Form.Get("stateName") != "" {
 			model.DB.Model(&state).Where(&types.State{Id: id}).Update("Name", c.Request.Form.Get("stateName"))
 		}
 	})
 	router.GET("/db/statefile", controllers.StateFile)
+	router.POST("/db/statefileU", controllers.StateFileU)
 	router.Run() // listen and serve on localhost
 }

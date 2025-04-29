@@ -10,20 +10,7 @@ import (
 	"github.com/dkallman13/Vicky3Optimizer/types"
 )
 
-func TokenizeStateFile(stateFileName string) {
-	var stateFileBuilder strings.Builder
-	workingDir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	stateFileBuilder.WriteString(workingDir)
-	stateFileBuilder.WriteString(stateFileName)
-	file, err := os.Open(stateFileBuilder.String())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
+func TokenizeStateFile(stateFile *os.File) {
 	parser := tokenizer.New()
 	parser.
 		AllowKeywordSymbols(tokenizer.Underscore, tokenizer.Numbers).
@@ -39,8 +26,9 @@ func TokenizeStateFile(stateFileName string) {
 	var stateName string
 	var stateId int
 	for {
-		n, err := file.Read(buffer)
+		n, err := stateFile.Read(buffer)
 		if err != nil && err != io.EOF {
+			log.Println("error here3")
 			log.Fatal(err)
 		}
 		if n == 0 {
@@ -75,6 +63,7 @@ func TokenizeStateFile(stateFileName string) {
 						stream.GoNext()
 						stateId, err = strconv.Atoi(stream.CurrentToken().ValueString())
 						if err != nil {
+							log.Println("error here4")
 							log.Fatal(err)
 						}
 						
@@ -93,6 +82,7 @@ func TokenizeStateFile(stateFileName string) {
 							stream.GoNext()
 							newstate.AirableLand, err = strconv.Atoi(stream.CurrentToken().ValueString())
 							if err != nil {
+								log.Println("error here5")
 								log.Fatal(err)
 							}
 						}
@@ -105,6 +95,7 @@ func TokenizeStateFile(stateFileName string) {
 								stream.GoNext()
 								newstate.WoodCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 								if err != nil {
+									log.Println("error here6")
 									log.Fatal(err)
 								}
 							}
@@ -118,6 +109,7 @@ func TokenizeStateFile(stateFileName string) {
 								stream.GoNext()
 								newstate.FishCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 								if err != nil {
+									log.Println("error here7")
 									log.Fatal(err)
 								}
 							}
@@ -130,6 +122,7 @@ func TokenizeStateFile(stateFileName string) {
 									stream.GoNext()
 									newstate.IronCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 									if err != nil {
+										log.Println("error here8")
 										log.Fatal(err)
 									}
 								}
@@ -142,6 +135,7 @@ func TokenizeStateFile(stateFileName string) {
 										stream.GoNext()
 										newstate.CoalCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 										if err != nil {
+											log.Println("error here9")
 											log.Fatal(err)
 										}
 									}
@@ -154,6 +148,7 @@ func TokenizeStateFile(stateFileName string) {
 											stream.GoNext()
 											newstate.SulfurCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 											if err != nil {
+												log.Println("error here10")
 												log.Fatal(err)
 											}
 										}
@@ -166,6 +161,7 @@ func TokenizeStateFile(stateFileName string) {
 												stream.GoNext()
 												newstate.LeadCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 												if err != nil {
+													log.Println("error here11")
 													log.Fatal(err)
 												}
 											}
@@ -178,6 +174,7 @@ func TokenizeStateFile(stateFileName string) {
 													stream.GoNext()
 													newstate.WhaleCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 													if err != nil {
+														log.Println("error here12")
 														log.Fatal(err)
 													}
 												}
@@ -192,6 +189,7 @@ func TokenizeStateFile(stateFileName string) {
 														case true:
 															newstate.OilCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 															if err != nil {
+																log.Println("error here13")
 																log.Fatal(err)
 															}
 														}
@@ -207,6 +205,7 @@ func TokenizeStateFile(stateFileName string) {
 															case true:
 																newstate.RubberCap, err = strconv.Atoi(stream.CurrentToken().ValueString())
 																if err != nil {
+																	log.Println("error here14")
 																	log.Fatal(err)
 																}
 															}

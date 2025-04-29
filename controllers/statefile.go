@@ -1,10 +1,10 @@
 package controllers
-
 import(
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/dkallman13/Vicky3Optimizer/model"
+	"github.com/gin-gonic/gin"
 )
-func StateFile(c* gin.Context){
-
+func StateFile(c* gin.Context) {
+	c.HTML(http.StatusOK, "/db/statefile", gin.H{
+		"title": "State File Upload",
+	})
 }
