@@ -25,6 +25,7 @@ func StateFileU(c *gin.Context) {
 		log.Fatal(err2)
 	}
 	defer openedFile.Close()
+
 	model.TokenizeStateFile(openedFile)
 	
 }
