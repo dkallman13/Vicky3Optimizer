@@ -7,7 +7,8 @@ based off of math and inspired by GeneralistGaming's spreadsheet
     - [ ] codify the save data
 - make a database with that data
 	- [ ] determine data structures of save
-	- [ ] create preliminary database of states
+	- [x] create preliminary database of states
+        - [x] read state files for updates that change states or mod compatibility
 	- [ ] create preliminary structure of good ids
 	- [ ] create preliminary structure of pop types
 	- [x] create database structure tables
