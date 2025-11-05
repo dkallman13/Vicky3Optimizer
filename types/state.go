@@ -27,7 +27,6 @@ type State struct {
 	HasSugar bool
 	HasBananas bool
 	HasTea bool
-	
 }
 
 func NewState(stateId int, stateName string) State {

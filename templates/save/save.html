@@ -1,3 +1,18 @@
 {{define "body"}}
     {{ .firstline }}
+    <table>
+    {{range .pops}}
+    <tr>
+        <td>{{.Id}}</td>
+        <td>{{.JobType}}</td>
+        <td>{{.WorkforceSize}}</td>
+        <td>{{.DependantsSize}}</td>
+        <td>{{.WorkplaceId}}</td>
+        <td>{{.Qualifications}}</td>
+        <td>{{.JobSatisfaction}}</td>
+        <td>{{.SoL}}</td>
+        <td>{{.Wealth}}</td>
+    </tr>
+    {{end}}
+    </table>
 {{end}}

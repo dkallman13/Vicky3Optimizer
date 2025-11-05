@@ -5,7 +5,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
 	"github.com/bzick/tokenizer"
 	"github.com/dkallman13/Vicky3Optimizer/types"
 )

@@ -3,7 +3,6 @@ package controllers
 import (
 	"log"
 	"os"
-
 	"github.com/dkallman13/Vicky3Optimizer/model"
 	"github.com/gin-gonic/gin"
 )

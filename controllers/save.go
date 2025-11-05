@@ -16,6 +16,7 @@ func Save(router *gin.Engine){
 			c.HTML(http.StatusOK, "/save", gin.H{
 				"title":     savFile,
 				"firstline": model.TokenizeSave(savFile),
+				"pops": model.PopLookup(),
 			})
 		})
 	}
